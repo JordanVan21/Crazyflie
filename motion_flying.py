@@ -17,13 +17,14 @@ parser.add_argument("-b", "--battery", action="store_true", help="Check battery 
 args = parser.parse_args()
 
 # URI to the Crazyflie to connect to
-URI = uri_helper.uri_from_env(default='radio://0/30/2M/E7E7E7E7E7')
+URI = uri_helper.uri_from_env(default='radio://0/15/2M/E7E7E7E7E7')
 deck_attached_event = Event()
 
 
 DEFAULT_HEIGHT = 0.5
 BOX_LIMIT = 0.1
 CALLBACK_AMT = 5
+
 callback_count = 0
 position_estimate = [0, 0]
 
@@ -31,7 +32,7 @@ position_estimate = [0, 0]
 logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger(__name__)
 
-
+# check if flow deck is attached
 def param_deck_flow(name, value_str):
     value = int(value_str)
     print(f"{name} with value: {value}")
@@ -41,12 +42,14 @@ def param_deck_flow(name, value_str):
     else:
         print('Deck is NOT attached!')
 
+# hover at default height
 def take_off(scf):
     with MotionCommander(scf, default_height=DEFAULT_HEIGHT) as mc:
         time.sleep(3)
         mc.stop()
 
 # NOT SMOOTH, worse than normal takeoff
+# Dead function
 def smooth_takeoff(mc, target_height=DEFAULT_HEIGHT, step=0.05, delay=0.3):
     cur_height = 0.0
     while cur_height < target_height:
@@ -55,6 +58,7 @@ def smooth_takeoff(mc, target_height=DEFAULT_HEIGHT, step=0.05, delay=0.3):
         time.sleep(delay)
     time.sleep(2)
 
+# forward turn, go back to start
 def linear_movement(mc):
     # forward/backward etc take velocities. sleep is needed to execute those velocities
     time.sleep(3)
@@ -113,13 +117,22 @@ def box_movement(mc):
     #     time.sleep(0.1)
 
 
-    
+# position state estimate    
 def log_pos_callback(timestamp, data, logconf):
     print(data)
     global position_estimate
     position_estimate[0] = data['stateEstimate.x']
     position_estimate[1] = data['stateEstimate.y']
 
+def config_pos(cf):
+    logconf = LogConfig(name='Position', period_in_ms=1000)
+    logconf.add_variable('stateEstimate.x', 'float')
+    logconf.add_variable('stateEstimate.y', 'float')
+    cf.log.add_config(logconf)
+    logconf.data_received_cb.add_callback(log_pos_callback)
+    return logconf
+
+# battery level logging
 def log_battery_callback(timestamp, data, batconf):
     """Callback function for battery logging."""
     voltage = data['pm.vbat']
@@ -130,15 +143,6 @@ def log_battery_callback(timestamp, data, batconf):
     callback_count += 1
     if callback_count >= CALLBACK_AMT:
         batconf.stop()
-
-
-def config_pos(cf):
-    logconf = LogConfig(name='Position', period_in_ms=1000)
-    logconf.add_variable('stateEstimate.x', 'float')
-    logconf.add_variable('stateEstimate.y', 'float')
-    cf.log.add_config(logconf)
-    logconf.data_received_cb.add_callback(log_pos_callback)
-    return logconf
 
 def config_bat(cf):
     batconf = LogConfig(name='Battery', period_in_ms=10)
@@ -169,19 +173,18 @@ def main():
         time.sleep(1.0)
 
         logconf = config_pos(cf)
-        logconf.start()
+        logconf.start() # log position estimate for entire duration
         with MotionCommander(scf, default_height=DEFAULT_HEIGHT) as mc:
-        #     smooth_takeoff(mc)
             logger.info("TAKEOFF")
-            # linear_movement(mc)
-            box_movement(mc)
+            linear_movement(mc)
+            # box_movement(mc)
         logconf.stop()
 
 def check_battery():
     # Initialize the low-level drivers
     cflib.crtp.init_drivers()
 
-    # cache config caraibles and logging variables for faster response
+    # cache config varaibles and logging variables for faster response
     with SyncCrazyflie(URI, cf=Crazyflie(rw_cache='./cache')) as scf:
         cf = scf.cf
         cf.param.add_update_callback(group='deck', name='bcFlow2',

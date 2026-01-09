@@ -2,19 +2,19 @@ import logging
 import sys
 import time
 from threading import Event
+import warnings
 
-import cflib.crtp
+
+import cflib.crtp #scan crazyflie instances
 from cflib.crazyflie import Crazyflie
 from cflib.crazyflie.log import LogConfig
 from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
 from cflib.positioning.motion_commander import MotionCommander
 from cflib.utils.multiranger import Multiranger
-import warnings
 from cflib.utils import uri_helper
 
 
-URI = uri_helper.uri_from_env(default='radio://0/80/2M/E7E7E7E7E7')
-uri = 'radio://0/15/2M/E7E7E7E7E7'
+URI = uri_helper.uri_from_env(default='radio://0/30/2M/E7E7E7E7E7')
 deck_attached_event = Event()
 
 DEFAULT_HEIGHT = 1.2
@@ -85,10 +85,12 @@ def take_off_with_multiranger(scf, multi_ranger):
             time.sleep(0.1)  # loop delay
         mc.stop()
 
+
+
 if __name__ == '__main__':
 
     cflib.crtp.init_drivers()
-    with SyncCrazyflie(uri, cf=Crazyflie(rw_cache='./cache')) as scf:
+    with SyncCrazyflie(URI, cf=Crazyflie(rw_cache='./cache')) as scf:
         scf.cf.param.add_update_callback(group='deck', name='bcFlow2',
                                          cb=param_deck_flow)
         time.sleep(1)
