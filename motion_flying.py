@@ -22,7 +22,7 @@ deck_attached_event = Event()
 
 
 DEFAULT_HEIGHT = 0.5
-BOX_LIMIT = 0.1
+BOX_LIMIT = 0.3
 CALLBACK_AMT = 5
 
 callback_count = 0
@@ -69,32 +69,32 @@ def linear_movement(mc):
     mc.forward(0.5)
     time.sleep(2)
 
-def box_movement(mc):
-    body_x_cmd = 0.2
-    body_y_cmd = 0
-    max_vel = 0.2
-    #comments are made assuming x is forward
-    while (True):
-        time.sleep(1)
-        if position_estimate[0] >= BOX_LIMIT and position_estimate[1] <= BOX_LIMIT:
-            print("GO RIGHT")
-            body_y_cmd = max_vel
-            body_x_cmd = 0
-        elif position_estimate[0] >= BOX_LIMIT and position_estimate[1] >= BOX_LIMIT:
-            print("GO BACK")
-            body_y_cmd = 0
-            body_x_cmd = -max_vel
-        elif position_estimate[0] <= -BOX_LIMIT and position_estimate[1] <= BOX_LIMIT:
-            print("GO LEFT")
-            body_y_cmd = -max_vel
-            body_x_cmd = 0
-        elif position_estimate[0] <= -BOX_LIMIT and position_estimate[1] <= -BOX_LIMIT:
-            print("GO FORWARD")
-            body_y_cmd = 0
-            body_x_cmd = max_vel
+# def box_movement(mc):
+#     body_x_cmd = 0.2 # velocity command
+#     body_y_cmd = 0
+#     max_vel = 0.2
+#     #comments are made assuming x is forward
+#     while (True):
+#         if position_estimate[0] >= BOX_LIMIT and position_estimate[1] <= BOX_LIMIT:
+#             print("GO RIGHT")
+#             body_y_cmd = max_vel
+#             body_x_cmd = 0
+#         elif position_estimate[0] >= BOX_LIMIT and position_estimate[1] >= BOX_LIMIT:
+#             print("GO BACK")
+#             body_y_cmd = 0
+#             body_x_cmd = -max_vel
+#         elif position_estimate[0] <= -BOX_LIMIT and position_estimate[1] <= BOX_LIMIT:
+#             print("GO LEFT")
+#             body_y_cmd = -max_vel
+#             body_x_cmd = 0
+#         elif position_estimate[0] <= -BOX_LIMIT and position_estimate[1] <= -BOX_LIMIT:
+#             print("GO FORWARD")
+#             body_y_cmd = 0
+#             body_x_cmd = max_vel
         
-        time.sleep(1)
-        mc.start_linear_motion(body_x_cmd, body_y_cmd, 0)
+#         time.sleep(1)
+#         mc.start_linear_motion(body_x_cmd, body_y_cmd, 0)
+#         time.sleep(1)
         
 
     # body_x_cmd = 0.2
@@ -115,6 +115,36 @@ def box_movement(mc):
     #     mc.start_linear_motion(body_x_cmd, body_y_cmd, 0)
 
     #     time.sleep(0.1)
+
+
+def box_movement(mc):
+    # takeoff
+    time.sleep(3)
+
+    # forward
+    mc.forward(0.5)
+    time.sleep(1)
+    mc.turn_left(90)
+    time.sleep(1)
+
+    # right
+    mc.forward(0.5)
+    time.sleep(1)
+    mc.turn_left(90)
+    time.sleep(1)
+
+    # back
+    mc.forward(0.5)
+    time.sleep(1)
+    mc.turn_left(90)
+    time.sleep(1)
+
+    # left
+    mc.forward(0.5)
+    time.sleep(1)
+    mc.turn_left(90)
+    time.sleep(1)
+
 
 
 # position state estimate    
@@ -176,8 +206,8 @@ def main():
         logconf.start() # log position estimate for entire duration
         with MotionCommander(scf, default_height=DEFAULT_HEIGHT) as mc:
             logger.info("TAKEOFF")
-            linear_movement(mc)
-            # box_movement(mc)
+            # linear_movement(mc)
+            box_movement(mc)
         logconf.stop()
 
 def check_battery():
