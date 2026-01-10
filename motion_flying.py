@@ -21,7 +21,7 @@ URI = uri_helper.uri_from_env(default='radio://0/15/2M/E7E7E7E7E7')
 deck_attached_event = Event()
 
 
-DEFAULT_HEIGHT = 0.5
+DEFAULT_HEIGHT = 0.2
 BOX_LIMIT = 0.3
 CALLBACK_AMT = 5
 
@@ -91,11 +91,11 @@ def linear_movement(mc):
 #             print("GO FORWARD")
 #             body_y_cmd = 0
 #             body_x_cmd = max_vel
-        
+
 #         time.sleep(1)
 #         mc.start_linear_motion(body_x_cmd, body_y_cmd, 0)
 #         time.sleep(1)
-        
+
 
     # body_x_cmd = 0.2
     # body_y_cmd = 0.1
@@ -117,46 +117,45 @@ def linear_movement(mc):
     #     time.sleep(0.1)
 
 def move_up(mc):
-    take_off_duration = 3
+    pause_duration = 1
     # takeoff
-    mc.up(0.5)
-    time.sleep(take_off_duration)
+    mc.up(0.3, velocity=0.1)
+    time.sleep(pause_duration)
 
 def box_movement(mc):
-    velocity = 3
-    linear_duration = 0.5
-    angular_duration = 1
-    
+    distance = 0.67
+    pause_duration = 1
+
 
     # forward
-    mc.forward(velocity)
-    time.sleep(linear_duration)
+    mc.forward(distance, velocity=0.1)
+    time.sleep(pause_duration)
     mc.turn_left(90)
-    time.sleep(angular_duration)
+    time.sleep(pause_duration)
 
     # left
-    mc.forward(velocity)
-    time.sleep(linear_duration)
+    mc.forward(distance, velocity=0.1)
+    time.sleep(pause_duration)
     mc.turn_left(90)
-    time.sleep(angular_duration)
+    time.sleep(pause_duration)
 
     # back
-    mc.forward(velocity)
-    time.sleep(linear_duration)
+    mc.forward(distance, velocity=0.1)
+    time.sleep(pause_duration)
     mc.turn_left(90)
-    time.sleep(angular_duration)
+    time.sleep(pause_duration)
 
     # right
-    mc.forward(velocity)
-    time.sleep(linear_duration)
+    mc.forward(distance, velocity=0.1)
+    time.sleep(pause_duration)
     mc.turn_left(90)
-    time.sleep(angular_duration)
+    time.sleep(pause_duration)
 
 
 
 
 
-# position state estimate    
+# position state estimate
 def log_pos_callback(timestamp, data, logconf):
     print(data)
     global position_estimate
@@ -200,9 +199,9 @@ def main():
     with SyncCrazyflie(URI, cf=Crazyflie(rw_cache='./cache')) as scf:
         cf = scf.cf
         cf.param.add_update_callback(group='deck', name='bcFlow2',
-            cb=param_deck_flow) 
+            cb=param_deck_flow)
 
-        time.sleep(1)  
+        time.sleep(1)
 
         if not deck_attached_event.wait(timeout=5):
             print('No flow deck detected')
@@ -217,12 +216,15 @@ def main():
             logger.info("TAKEOFF")
             # linear_movement(mc)
             move_up(mc)
+            print("MOVING UP")
             box_movement(mc)
+            print("BOX")
             move_up(mc)
+            print("MOVING UP")
             box_movement(mc)
+            print("BOX")
 
-            mc.down(0.2)
-            time.sleep(3)
+            mc.down(1, velocity=0.1)
 
         logconf.stop()
 
@@ -234,9 +236,9 @@ def check_battery():
     with SyncCrazyflie(URI, cf=Crazyflie(rw_cache='./cache')) as scf:
         cf = scf.cf
         cf.param.add_update_callback(group='deck', name='bcFlow2',
-            cb=param_deck_flow) 
+            cb=param_deck_flow)
 
-        time.sleep(1)  
+        time.sleep(1)
 
         batconf = config_bat(cf)
         batconf.start()
