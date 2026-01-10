@@ -119,11 +119,12 @@ def linear_movement(mc):
 def move_up(mc):
     take_off_duration = 3
     # takeoff
+    mc.up(0.5)
     time.sleep(take_off_duration)
 
 def box_movement(mc):
-    velocity = 1
-    linear_duration = 2
+    velocity = 3
+    linear_duration = 0.5
     angular_duration = 1
     
 
