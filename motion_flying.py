@@ -118,37 +118,38 @@ def linear_movement(mc):
 
 def move_up(mc):
     pause_duration = 1
+    VELOCITY = 0.2
     # takeoff
-    mc.up(0.3, velocity=0.1)
+    mc.up(0.3, velocity=VELOCITY)
     time.sleep(pause_duration)
 
 def box_movement(mc):
     distance = 0.67
     pause_duration = 1
-
+    VELOCITY = 0.3
 
     # forward
-    mc.forward(distance, velocity=0.1)
+    mc.forward(distance, velocity=VELOCITY)
     time.sleep(pause_duration)
-    mc.turn_left(90)
+    mc.turn_left(90, rate=90)
     time.sleep(pause_duration)
 
     # left
-    mc.forward(distance, velocity=0.1)
+    mc.forward(distance, velocity=VELOCITY)
     time.sleep(pause_duration)
-    mc.turn_left(90)
+    mc.turn_left(90, rate=90)
     time.sleep(pause_duration)
 
     # back
-    mc.forward(distance, velocity=0.1)
+    mc.forward(distance, velocity=VELOCITY)
     time.sleep(pause_duration)
-    mc.turn_left(90)
+    mc.turn_left(90, rate=90)
     time.sleep(pause_duration)
 
     # right
-    mc.forward(distance, velocity=0.1)
+    mc.forward(distance, velocity=VELOCITY)
     time.sleep(pause_duration)
-    mc.turn_left(90)
+    mc.turn_left(90, rate=90)
     time.sleep(pause_duration)
 
 

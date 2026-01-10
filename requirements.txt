@@ -1,5 +1,5 @@
 cflib
-cflient
+cfclient
 # fastapi
 # uvicorn[standard]
 # fastapi[standard]
