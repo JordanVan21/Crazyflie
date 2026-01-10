@@ -116,34 +116,42 @@ def linear_movement(mc):
 
     #     time.sleep(0.1)
 
+def move_up(mc):
+    take_off_duration = 3
+    # takeoff
+    time.sleep(take_off_duration)
 
 def box_movement(mc):
-    # takeoff
-    time.sleep(3)
+    velocity = 1
+    linear_duration = 2
+    angular_duration = 1
+    
 
     # forward
-    mc.forward(0.5)
-    time.sleep(1)
+    mc.forward(velocity)
+    time.sleep(linear_duration)
     mc.turn_left(90)
-    time.sleep(1)
-
-    # right
-    mc.forward(0.5)
-    time.sleep(1)
-    mc.turn_left(90)
-    time.sleep(1)
-
-    # back
-    mc.forward(0.5)
-    time.sleep(1)
-    mc.turn_left(90)
-    time.sleep(1)
+    time.sleep(angular_duration)
 
     # left
-    mc.forward(0.5)
-    time.sleep(1)
+    mc.forward(velocity)
+    time.sleep(linear_duration)
     mc.turn_left(90)
-    time.sleep(1)
+    time.sleep(angular_duration)
+
+    # back
+    mc.forward(velocity)
+    time.sleep(linear_duration)
+    mc.turn_left(90)
+    time.sleep(angular_duration)
+
+    # right
+    mc.forward(velocity)
+    time.sleep(linear_duration)
+    mc.turn_left(90)
+    time.sleep(angular_duration)
+
+
 
 
 
@@ -207,7 +215,14 @@ def main():
         with MotionCommander(scf, default_height=DEFAULT_HEIGHT) as mc:
             logger.info("TAKEOFF")
             # linear_movement(mc)
+            move_up(mc)
             box_movement(mc)
+            move_up(mc)
+            box_movement(mc)
+
+            mc.down(0.2)
+            time.sleep(3)
+
         logconf.stop()
 
 def check_battery():
