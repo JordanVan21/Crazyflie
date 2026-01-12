@@ -5,6 +5,8 @@ from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
 from cflib.positioning.motion_commander import MotionCommander
 from cflib.utils import uri_helper
 
+# START IN THE MIDDLE
+
 URI = uri_helper.uri_from_env(default='radio://0/15/2M/E7E7E7E7E7')
 
 # Cube Dimensions

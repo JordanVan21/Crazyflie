@@ -5,9 +5,11 @@ from cflib.crazyflie import Crazyflie
 from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
 from cflib.utils import uri_helper
 
+# START IN THE MIDDLE LEFT
+
 # --- CONFIGURATION ---
 URI = uri_helper.uri_from_env(default='radio://0/15/2M/E7E7E7E7E7')
-LOOP_DIAMETER = 0.6     # Width of one loop in meters
+LOOP_DIAMETER = 0.4     # Width of one loop in meters
 LOOP_TIME = 6.0         # Seconds to complete ONE loop (Total Fig8 time = 12s)
 FLIGHT_HEIGHT = 0.5
 
